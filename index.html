@@ -867,12 +867,14 @@
     let cat = document.getElementById('f-cat').value;
     if (cat === '_new_') cat = document.getElementById('f-cat-new').value.trim();
     const title = document.getElementById('f-title').value.trim();
-    const url = document.getElementById('f-url').value.trim();
+    let url = document.getElementById('f-url').value.trim();
+    if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
     if (!cat || !title || !url) { alert('카테고리, 제목, URL은 필수입니다.'); return; }
     const subs = [];
     document.querySelectorAll('.sub-row').forEach(row => {
       const t = row.querySelector('.sub-t').value.trim();
-      const u = row.querySelector('.sub-u').value.trim();
+      let u = row.querySelector('.sub-u').value.trim();
+      if (u && !/^https?:\/\//i.test(u)) u = 'https://' + u;
       if (t || u) subs.push({ title: t, url: u });
     });
     const id = document.getElementById('f-id').value;
