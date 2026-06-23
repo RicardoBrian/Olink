@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>오범석 링크 모음</title>
+<style>
+  /* ── Reset & Base ─────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #F8F7F4;
+    --surface:   #FFFFFF;
+    --surface2:  #F2F1EE;
+    --border:    #E8E6E1;
+    --text:      #1A1917;
+    --text-2:    #6B6860;
+    --text-3:    #A09D98;
+    --accent:    #C0392B;
+    --accent-bg: #FDF1F0;
+    --radius:    10px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    --shadow:    0 4px 16px rgba(0,0,0,.07), 0 1px 4px rgba(0,0,0,.04);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.06);
+    --transition: 180ms cubic-bezier(.4,0,.2,1);
+  }
+
+  [data-theme="dark"] {
+    --bg:        #111110;
+    --surface:   #1C1B1A;
+    --surface2:  #232220;
+    --border:    #2E2C2A;
+    --text:      #F0EDE8;
+    --text-2:    #8A8680;
+    --text-3:    #555250;
+    --accent:    #E05044;
+    --accent-bg: #1F1514;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,.3);
+    --shadow:    0 4px 16px rgba(0,0,0,.4);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,.6);
+  }
+
+  body {
+    font-family: -apple-system, 'Apple SD Gothic Neo', 'Pretendard', BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+
+  /* ── Layout ───────────────────────────────────── */
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ── Header ───────────────────────────────────── */
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 48px;
+  }
+  .site-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text);
+  }
+  .site-title span { color: var(--text-2); font-weight: 400; }
+
+  .header-actions { display: flex; gap: 4px; }
+  .hdr-btn {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    border: none; background: transparent;
+    color: var(--text-2);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background var(--transition), color var(--transition);
+  }
+  .hdr-btn:hover { background: var(--surface2); color: var(--text); }
+  .hdr-btn.active { color: var(--accent); }
+
+  /* ── Pinned strip ─────────────────────────────── */
+  #pinned-section {
+    display: none;
+    margin-bottom: 40px;
+  }
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 12px;
+  }
+  .pinned-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+  }
+
+  /* ── Board ────────────────────────────────────── */
+  .board {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 48px;
+    align-items: start;
+  }
+  @media (max-width: 720px) {
+    .board { grid-template-columns: 1fr; gap: 0; }
+    .wrap { padding: 28px 16px 80px; }
+    .site-header { margin-bottom: 32px; }
+  }
+
+  /* ── Category ─────────────────────────────────── */
+  .cat-block { margin-bottom: 32px; }
+
+  .cat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+  .cat-drag-handle {
+    display: none;
+    color: var(--text-3);
+    font-size: .85rem;
+    cursor: grab;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: color var(--transition);
+  }
+  .cat-drag-handle:hover { color: var(--text-2); }
+  .cat-name {
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    flex: 1;
+    transition: color var(--transition);
+  }
+  .cat-header:hover .cat-name { color: var(--text-2); }
+  .cat-toggle {
+    font-size: .65rem;
+    color: var(--text-3);
+    transition: transform var(--transition);
+  }
+  .cat-block.collapsed .cat-toggle { transform: rotate(-90deg); }
+  .cat-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow: hidden;
+  }
+  .cat-block.collapsed .cat-body { display: none; }
+
+  /* ── Link card ────────────────────────────────── */
+  .link-card {
+    display: flex;
+    align-items: stretch;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition:
+      border-color var(--transition),
+      box-shadow var(--transition),
+      transform var(--transition),
+      opacity var(--transition);
+  }
+  .link-card:hover {
+    border-color: transparent;
+    box-shadow: var(--shadow);
+    transform: translateY(-1px);
+  }
+
+  .card-drag {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    color: var(--border);
+    font-size: .8rem;
+    cursor: grab;
+    flex-shrink: 0;
+    transition: color var(--transition);
+  }
+  .card-drag:hover { color: var(--text-3); }
+  .card-drag:active { cursor: grabbing; }
+
+  .card-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    padding: 11px 14px 11px 12px;
+    text-decoration: none;
+    color: var(--text);
+    min-width: 0;
+    font-size: .875rem;
+    font-weight: 500;
+    transition: color var(--transition);
+  }
+  .card-main:hover { color: var(--accent); }
+  .card-emoji {
+    font-size: 1rem;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .card-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-subs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px 0 0;
+    flex-shrink: 0;
+  }
+  .card-sub-link {
+    font-size: .7rem;
+    font-weight: 600;
+    color: var(--text-3);
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: var(--surface2);
+    white-space: nowrap;
+    transition: background var(--transition), color var(--transition);
+  }
+  .card-sub-link:hover {
+    background: var(--accent-bg);
+    color: var(--accent);
+  }
+
+  .card-actions {
+    display: none;
+    align-items: center;
+    gap: 0;
+    padding: 0 4px;
+    border-left: 1px solid var(--border);
+  }
+  .card-action {
+    width: 30px; height: 100%;
+    min-height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .8rem;
+    cursor: pointer;
+    color: var(--text-3);
+    transition: color var(--transition), background var(--transition);
+    border-radius: 0;
+  }
+  .card-action:hover { color: var(--accent); background: var(--accent-bg); }
+  .card-action.pinned-on { color: var(--accent); }
+
+  /* ── Pinned card (compact) ────────────────────── */
+  .pinned-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text);
+    font-size: .85rem;
+    font-weight: 500;
+    transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+  }
+  .pinned-card:hover {
+    border-color: transparent;
+    box-shadow: var(--shadow);
+    transform: translateY(-1px);
+  }
+  .pinned-card .card-emoji { font-size: .95rem; }
+
+  /* ── Loader ───────────────────────────────────── */
+  #loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 0;
+  }
+  .spinner {
+    width: 24px; height: 24px;
+    border: 2px solid var(--border);
+    border-top-color: var(--text-2);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Add btn ──────────────────────────────────── */
+  #add-btn {
+    display: none;
+    width: 100%;
+    margin-top: 40px;
+    padding: 13px;
+    border-radius: var(--radius);
+    border: 1.5px dashed var(--border);
+    background: transparent;
+    color: var(--text-3);
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color var(--transition), color var(--transition), background var(--transition);
+  }
+  #add-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-bg);
+  }
+
+  /* ── Sidebar overlay ──────────────────────────── */
+  #overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 100;
+    opacity: 0;
+    transition: opacity .25s;
+  }
+
+  /* ── Sidebar panel ────────────────────────────── */
+  #sidebar {
+    position: fixed;
+    top: 0; right: -440px; bottom: 0;
+    width: 100%; max-width: 400px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    z-index: 101;
+    display: flex;
+    flex-direction: column;
+    transition: right .28s cubic-bezier(.4,0,.2,1);
+  }
+
+  .sb-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 24px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .sb-title {
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .sb-close {
+    width: 32px; height: 32px;
+    border: none; background: transparent;
+    border-radius: 8px;
+    color: var(--text-2);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background var(--transition), color var(--transition);
+  }
+  .sb-close:hover { background: var(--surface2); color: var(--text); }
+
+  .sb-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .sb-label {
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 4px;
+    margin-top: 4px;
+  }
+
+  .sb-input {
+    width: 100%;
+    padding: 11px 14px;
+    background: var(--surface2);
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: .875rem;
+    outline: none;
+    transition: border-color var(--transition), background var(--transition);
+    appearance: none;
+  }
+  .sb-input:focus {
+    border-color: var(--accent);
+    background: var(--surface);
+  }
+  select.sb-input { cursor: pointer; }
+
+  .emoji-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    position: relative;
+  }
+  #emoji-btn {
+    width: 46px; height: 46px;
+    flex-shrink: 0;
+    background: var(--surface2);
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color var(--transition);
+    user-select: none;
+  }
+  #emoji-btn:hover { border-color: var(--accent); }
+
+  #emoji-picker {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: 272px;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 4px;
+    padding: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    z-index: 110;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .ep-item {
+    font-size: 1rem;
+    text-align: center;
+    padding: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background var(--transition), transform var(--transition);
+  }
+  .ep-item:hover { background: var(--surface2); transform: scale(1.15); }
+
+  .sub-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .sub-row .sb-input { margin: 0; }
+  .sub-del {
+    flex-shrink: 0;
+    width: 30px; height: 30px;
+    border: none; background: transparent;
+    border-radius: 6px;
+    color: var(--text-3);
+    font-size: .9rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background var(--transition), color var(--transition);
+  }
+  .sub-del:hover { background: #fef2f2; color: #ef4444; }
+
+  .sub-add-btn {
+    width: 100%;
+    padding: 9px;
+    background: var(--surface2);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    color: var(--text-3);
+    font-size: .78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    letter-spacing: .04em;
+  }
+  .sub-add-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+
+  .sb-footer {
+    padding: 16px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .sb-save {
+    padding: 13px;
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    border-radius: var(--radius);
+    font-size: .875rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity var(--transition), transform var(--transition);
+  }
+  .sb-save:hover { opacity: .88; transform: translateY(-1px); }
+  .sb-save:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+  .sb-delete {
+    display: none;
+    padding: 11px;
+    background: transparent;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+    border-radius: var(--radius);
+    font-size: .8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+  .sb-delete:hover { background: #fef2f2; }
+
+  /* ── Drag states ──────────────────────────────── */
+  .link-card.dragging { opacity: .4; }
+  .cat-block.dragging { opacity: .4; }
+  .link-card.drag-over { box-shadow: 0 0 0 2px var(--accent); }
+  .cat-block.drag-over > .cat-body { box-shadow: inset 0 0 0 2px var(--accent); border-radius: var(--radius); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="site-title">오범석 <span>링크 모음</span></div>
+    <div class="header-actions">
+      <button class="hdr-btn" id="theme-btn" onclick="toggleTheme()" title="테마">◐</button>
+      <button class="hdr-btn" id="lock-btn" onclick="login()" title="관리자">🔒</button>
+    </div>
+  </header>
+
+  <!-- Pinned -->
+  <section id="pinned-section">
+    <div class="section-label">상단 고정</div>
+    <div class="pinned-grid" id="pinned-grid"></div>
+  </section>
+
+  <!-- Loader -->
+  <div id="loader"><div class="spinner"></div></div>
+
+  <!-- Board -->
+  <div class="board" id="board" style="display:none">
+    <div id="col-left"></div>
+    <div id="col-right"></div>
+  </div>
+
+  <button id="add-btn" onclick="openSidebar()">+ 새 링크 추가</button>
+</div>
+
+<!-- Overlay -->
+<div id="overlay" onclick="closeSidebar()"></div>
+
+<!-- Sidebar -->
+<div id="sidebar">
+  <div class="sb-header">
+    <span class="sb-title" id="sb-title">새 링크 추가</span>
+    <button class="sb-close" onclick="closeSidebar()">✕</button>
+  </div>
+  <div class="sb-body">
+    <input type="hidden" id="f-row">
+    <input type="hidden" id="f-pinned" value="false">
+
+    <div>
+      <div class="sb-label">위치</div>
+      <select id="f-pos" class="sb-input">
+        <option value="left">왼쪽 단</option>
+        <option value="right">오른쪽 단</option>
+      </select>
+    </div>
+
+    <div>
+      <div class="sb-label">카테고리</div>
+      <select id="f-cat" class="sb-input" onchange="onCatChange()"></select>
+      <input type="text" id="f-cat-new" class="sb-input" placeholder="새 카테고리 이름" style="display:none; margin-top:6px;">
+    </div>
+
+    <div>
+      <div class="sb-label">제목 & 이모지</div>
+      <div class="emoji-row">
+        <button type="button" id="emoji-btn" onclick="toggleEmojiPicker(event)">🔗</button>
+        <input type="hidden" id="f-emoji" value="🔗">
+        <input type="text" id="f-title" class="sb-input" placeholder="제목" style="flex:1; width:auto;">
+        <div id="emoji-picker"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sb-label">URL</div>
+      <input type="text" id="f-url" class="sb-input" placeholder="https://">
+    </div>
+
+    <div>
+      <div class="sb-label">서브 버튼</div>
+      <div id="subs-wrap" style="display:flex; flex-direction:column; gap:6px; margin-bottom:8px;"></div>
+      <button type="button" class="sub-add-btn" onclick="addSubRow()">+ 서브 버튼 추가</button>
+    </div>
+  </div>
+  <div class="sb-footer">
+    <button class="sb-save" id="f-save" onclick="handleSave()">저장하기</button>
+    <button class="sb-delete" id="f-delete" onclick="handleDelete()">이 링크 삭제</button>
+  </div>
+</div>
+
+<script>
+  // ── State ──────────────────────────────────────
+  let isAdmin = false;
+  let adminPw = '';
+  let rawLinks = [];
+
+  const EMOJIS = ['🏫','📝','📚','🖥️','🏠','🔗','📅','✅','💡','📌','🚀','📊','📂','✉️','🔍','⚙️','⭐','🔥','📢','📁','🎵','📸','🎨','🛒','🍎','☕','🏃','💬','🛠️','📎','💼','🔖','📰','🗂️','🌐','🎯','📱','💻','🖨️','🗒️','📋'];
+
+  // ── Init ───────────────────────────────────────
+  window.onload = () => {
+    buildEmojiPicker();
+    loadData();
+    applyStoredTheme();
+  };
+
+  function loadData() {
+    google.script.run.withSuccessHandler(res => {
+      rawLinks = res.links;
+      document.getElementById('loader').style.display = 'none';
+      document.getElementById('board').style.display = 'grid';
+      render();
+    }).getDashboardData();
+  }
+
+  // ── Render ─────────────────────────────────────
+  function render() {
+    const pg = document.getElementById('pinned-grid');
+    const colL = document.getElementById('col-left');
+    const colR = document.getElementById('col-right');
+    pg.innerHTML = '';
+    colL.innerHTML = '';
+    colR.innerHTML = '';
+
+    const pinned = rawLinks.filter(l => l.pinned);
+    const ps = document.getElementById('pinned-section');
+    if (pinned.length) {
+      ps.style.display = 'block';
+      pinned.forEach(l => pg.insertAdjacentHTML('beforeend', pinnedCardHTML(l)));
+    } else {
+      ps.style.display = 'none';
+    }
+
+    const leftGroups = {}, rightGroups = {};
+    rawLinks.filter(l => !l.pinned).forEach(l => {
+      const g = l.position === 'right' ? rightGroups : leftGroups;
+      (g[l.category] = g[l.category] || []).push(l);
+    });
+
+    renderColumn(leftGroups, colL);
+    renderColumn(rightGroups, colR);
+
+    updateAdminUI();
+    if (isAdmin) enableDnD();
+  }
+
+  function renderColumn(groups, container) {
+    for (const cat in groups) {
+      const block = document.createElement('div');
+      block.className = 'cat-block';
+      block.innerHTML = `
+        <div class="cat-header" onclick="toggleCat(this)">
+          <span class="cat-drag-handle">⠿</span>
+          <span class="cat-name">${cat}</span>
+          <span class="cat-toggle">▾</span>
+        </div>
+        <div class="cat-body">
+          ${groups[cat].map(l => cardHTML(l)).join('')}
+        </div>`;
+      container.appendChild(block);
+    }
+  }
+
+  function cardHTML(l) {
+    const d = JSON.stringify(l).replace(/"/g, '&quot;');
+    const subsHTML = l.subs.map(s =>
+      `<a class="card-sub-link" href="${s.url}" target="_blank" rel="noopener">${s.title}</a>`
+    ).join('');
+    return `
+      <div class="link-card" ${isAdmin ? 'draggable="true"' : ''} data-item="${d}">
+        <div class="card-drag">⠿</div>
+        <a class="card-main" href="${l.url}" target="_blank" rel="noopener">
+          <span class="card-emoji">${l.emoji}</span>
+          <span class="card-title">${l.title}</span>
+        </a>
+        ${subsHTML ? `<div class="card-subs">${subsHTML}</div>` : ''}
+        <div class="card-actions">
+          <div class="card-action ${l.pinned ? 'pinned-on' : ''}" title="${l.pinned ? '고정 해제' : '상단 고정'}" onclick="togglePin(${l.rowIndex},${!l.pinned})">📌</div>
+          <div class="card-action" title="수정" onclick='openSidebar(${JSON.stringify(l)})'>✏️</div>
+        </div>
+      </div>`;
+  }
+
+  function pinnedCardHTML(l) {
+    return `<a class="pinned-card" href="${l.url}" target="_blank" rel="noopener">
+      <span class="card-emoji">${l.emoji}</span>
+      <span>${l.title}</span>
+    </a>`;
+  }
+
+  function toggleCat(header) {
+    header.closest('.cat-block').classList.toggle('collapsed');
+  }
+
+  // ── Admin UI ───────────────────────────────────
+  function updateAdminUI() {
+    const show = isAdmin ? 'flex' : 'none';
+    const block = isAdmin ? 'inline-block' : 'none';
+    document.querySelectorAll('.card-drag').forEach(e => e.style.display = show);
+    document.querySelectorAll('.cat-drag-handle').forEach(e => e.style.display = block);
+    document.querySelectorAll('.card-actions').forEach(e => e.style.display = show);
+    document.querySelectorAll('.link-card').forEach(e => {
+      isAdmin ? e.setAttribute('draggable', 'true') : e.removeAttribute('draggable');
+    });
+    document.querySelectorAll('.cat-block').forEach(e => {
+      isAdmin ? e.setAttribute('draggable', 'true') : e.removeAttribute('draggable');
+    });
+    document.getElementById('add-btn').style.display = isAdmin ? 'block' : 'none';
+  }
+
+  // ── Auth ───────────────────────────────────────
+  function login() {
+    if (isAdmin) return;
+    const pw = prompt('관리자 비밀번호를 입력하세요.');
+    if (pw === '9600') {
+      isAdmin = true; adminPw = pw;
+      document.getElementById('lock-btn').textContent = '🔓';
+      document.getElementById('lock-btn').classList.add('active');
+      render();
+    } else if (pw !== null) {
+      alert('비밀번호가 틀렸습니다.');
+    }
+  }
+
+  function togglePin(rowIndex, newVal) {
+    if (!isAdmin) return;
+    const l = rawLinks.find(x => x.rowIndex === rowIndex);
+    if (!l) return;
+    l.pinned = newVal;
+    google.script.run.withSuccessHandler(() => loadData()).editLink({
+      pw: adminPw, rowIndex: l.rowIndex, cat: l.category,
+      title: l.title, url: l.url, emoji: l.emoji,
+      pinned: l.pinned, position: l.position,
+      subs: l.subs.flatMap(s => [s.title, s.url])
+    });
+  }
+
+  // ── DnD ───────────────────────────────────────
+  let dragEl = null, dragType = null;
+
+  function enableDnD() {
+    document.querySelectorAll('.link-card[draggable="true"]').forEach(el => {
+      el.ondragstart = e => { e.stopPropagation(); dragEl = el; dragType = 'card'; setTimeout(() => el.classList.add('dragging'), 0); };
+      el.ondragend = e => { e.stopPropagation(); el.classList.remove('dragging'); dragEl = null; saveOrder(); };
+      el.ondragover = e => { e.preventDefault(); e.stopPropagation(); };
+      el.ondragenter = e => { e.preventDefault(); e.stopPropagation(); if (dragType === 'card') el.classList.add('drag-over'); };
+      el.ondragleave = e => { e.stopPropagation(); el.classList.remove('drag-over'); };
+      el.ondrop = e => {
+        e.stopPropagation(); el.classList.remove('drag-over');
+        if (dragType === 'card' && dragEl && dragEl !== el && dragEl.parentNode === el.parentNode)
+          el.parentNode.insertBefore(dragEl, el);
+      };
+    });
+
+    document.querySelectorAll('.cat-block').forEach(el => {
+      el.ondragstart = e => { dragEl = el; dragType = 'cat'; setTimeout(() => el.classList.add('dragging'), 0); };
+      el.ondragend = e => { el.classList.remove('dragging'); dragEl = null; saveOrder(); };
+      el.ondragover = e => e.preventDefault();
+      el.ondragenter = e => { e.preventDefault(); if (dragType === 'cat') el.classList.add('drag-over'); };
+      el.ondragleave = () => el.classList.remove('drag-over');
+      el.ondrop = e => {
+        e.stopPropagation(); el.classList.remove('drag-over');
+        if (dragType === 'cat' && dragEl && dragEl !== el && dragEl.parentNode === el.parentNode)
+          el.parentNode.insertBefore(dragEl, el);
+      };
+    });
+  }
+
+  function saveOrder() {
+    const rows = [];
+    const collect = (colId, posText) => {
+      document.querySelectorAll(`#${colId} .cat-block`).forEach(block => {
+        const cat = block.querySelector('.cat-name').textContent;
+        block.querySelectorAll('.link-card').forEach(card => {
+          const item = JSON.parse(card.dataset.item);
+          const row = [cat, item.title, item.url, item.emoji, item.pinned, posText];
+          item.subs.forEach(s => row.push(s.title, s.url));
+          rows.push(row);
+        });
+      });
+    };
+    document.querySelectorAll('#pinned-grid .pinned-card').forEach(card => {
+      // pinned cards keep their existing data
+    });
+    // rebuild from pinned section (we don't drag those)
+    rawLinks.filter(l => l.pinned).forEach(l => {
+      const posText = l.position === 'right' ? '오른쪽' : '왼쪽';
+      const row = [l.category, l.title, l.url, l.emoji, l.pinned, posText];
+      l.subs.forEach(s => row.push(s.title, s.url));
+      rows.push(row);
+    });
+    collect('col-left', '왼쪽');
+    collect('col-right', '오른쪽');
+    google.script.run.syncLinksOrder(adminPw, rows);
+  }
+
+  // ── Sidebar ────────────────────────────────────
+  function openSidebar(link = null) {
+    if (!isAdmin) return login();
+    buildCatSelect(link ? link.category : '');
+
+    const isEdit = !!link;
+    document.getElementById('sb-title').textContent = isEdit ? '링크 수정' : '새 링크 추가';
+    document.getElementById('f-row').value = isEdit ? link.rowIndex : '';
+    document.getElementById('f-pinned').value = isEdit ? link.pinned : 'false';
+    document.getElementById('f-pos').value = isEdit ? link.position : 'left';
+    document.getElementById('f-title').value = isEdit ? link.title : '';
+    document.getElementById('f-url').value = isEdit ? link.url : '';
+    setEmoji(isEdit ? link.emoji : '🔗');
+
+    document.getElementById('subs-wrap').innerHTML = '';
+    if (isEdit && link.subs && link.subs.length) {
+      link.subs.forEach(s => addSubRow(s.title, s.url));
+    }
+
+    document.getElementById('f-delete').style.display = isEdit ? 'block' : 'none';
+
+    document.getElementById('overlay').style.display = 'block';
+    requestAnimationFrame(() => {
+      document.getElementById('overlay').style.opacity = '1';
+      document.getElementById('sidebar').style.right = '0';
+    });
+  }
+
+  function closeSidebar() {
+    document.getElementById('sidebar').style.right = '-440px';
+    document.getElementById('overlay').style.opacity = '0';
+    setTimeout(() => document.getElementById('overlay').style.display = 'none', 280);
+    document.getElementById('emoji-picker').style.display = 'none';
+  }
+
+  // ── Category dropdown ──────────────────────────
+  function buildCatSelect(selected = '') {
+    const sel = document.getElementById('f-cat');
+    const cats = [...new Set(rawLinks.map(l => l.category))];
+    sel.innerHTML = `<option value="" disabled ${!selected ? 'selected' : ''}>카테고리 선택</option>`
+      + cats.map(c => `<option value="${c}" ${c === selected ? 'selected' : ''}>${c}</option>`).join('')
+      + `<option value="_new_" ${!cats.includes(selected) && selected ? 'selected' : ''}>+ 새 카테고리</option>`;
+    const input = document.getElementById('f-cat-new');
+    input.style.display = (!cats.includes(selected) && selected) ? 'block' : 'none';
+    if (!cats.includes(selected) && selected) input.value = selected;
+    else input.value = '';
+  }
+
+  function onCatChange() {
+    const val = document.getElementById('f-cat').value;
+    const inp = document.getElementById('f-cat-new');
+    inp.style.display = val === '_new_' ? 'block' : 'none';
+    if (val === '_new_') inp.focus();
+  }
+
+  // ── Sub buttons ────────────────────────────────
+  function addSubRow(title = '', url = '') {
+    const wrap = document.getElementById('subs-wrap');
+    const div = document.createElement('div');
+    div.className = 'sub-row';
+    div.innerHTML = `
+      <input type="text" class="sb-input sub-t" placeholder="이름" value="${title}" style="flex:1; width:auto;">
+      <input type="text" class="sb-input sub-u" placeholder="URL" value="${url}" style="flex:2; width:auto;">
+      <button type="button" class="sub-del" onclick="this.closest('.sub-row').remove()">✕</button>`;
+    wrap.appendChild(div);
+  }
+
+  // ── Save / Delete ──────────────────────────────
+  function handleSave() {
+    let cat = document.getElementById('f-cat').value;
+    if (cat === '_new_') cat = document.getElementById('f-cat-new').value.trim();
+    const title = document.getElementById('f-title').value.trim();
+    const url = document.getElementById('f-url').value.trim();
+    if (!cat || !title || !url) { alert('카테고리, 제목, URL은 필수입니다.'); return; }
+
+    const subs = [];
+    document.querySelectorAll('.sub-row').forEach(row => {
+      const t = row.querySelector('.sub-t').value.trim();
+      const u = row.querySelector('.sub-u').value.trim();
+      if (t || u) subs.push(t, u);
+    });
+
+    const rowIndex = document.getElementById('f-row').value;
+    const payload = {
+      pw: adminPw, rowIndex, cat, title, url,
+      emoji: document.getElementById('f-emoji').value,
+      pinned: document.getElementById('f-pinned').value === 'true',
+      position: document.getElementById('f-pos').value,
+      subs
+    };
+
+    const btn = document.getElementById('f-save');
+    btn.textContent = '저장 중…'; btn.disabled = true;
+
+    google.script.run.withSuccessHandler(() => {
+      closeSidebar(); loadData();
+      btn.textContent = '저장하기'; btn.disabled = false;
+    })[rowIndex ? 'editLink' : 'addLink'](payload);
+  }
+
+  function handleDelete() {
+    const rowIndex = document.getElementById('f-row').value;
+    if (!rowIndex || !confirm('정말 이 링크를 삭제하시겠습니까?')) return;
+    const btn = document.getElementById('f-delete');
+    btn.textContent = '삭제 중…'; btn.disabled = true;
+    google.script.run.withSuccessHandler(() => {
+      closeSidebar(); loadData();
+      btn.textContent = '이 링크 삭제'; btn.disabled = false;
+    }).deleteLink(adminPw, rowIndex);
+  }
+
+  // ── Emoji picker ───────────────────────────────
+  function buildEmojiPicker() {
+    const picker = document.getElementById('emoji-picker');
+    picker.innerHTML = '';
+    EMOJIS.forEach(e => {
+      const s = document.createElement('span');
+      s.className = 'ep-item'; s.textContent = e;
+      s.onclick = ev => { ev.stopPropagation(); setEmoji(e); picker.style.display = 'none'; };
+      picker.appendChild(s);
+    });
+  }
+
+  function setEmoji(e) {
+    document.getElementById('f-emoji').value = e;
+    document.getElementById('emoji-btn').textContent = e;
+  }
+
+  function toggleEmojiPicker(e) {
+    if (e) e.stopPropagation();
+    const picker = document.getElementById('emoji-picker');
+    picker.style.display = picker.style.display === 'grid' ? 'none' : 'grid';
+  }
+
+  document.addEventListener('click', e => {
+    const picker = document.getElementById('emoji-picker');
+    if (!document.getElementById('emoji-btn').contains(e.target) && !picker.contains(e.target))
+      picker.style.display = 'none';
+  });
+
+  // ── Theme ──────────────────────────────────────
+  function applyStoredTheme() {
+    if (localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
+  }
+
+  function toggleTheme() {
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    isDark ? document.body.removeAttribute('data-theme') : document.body.setAttribute('data-theme', 'dark');
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  }
+</script>
+</body>
+</html>
