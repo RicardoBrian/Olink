@@ -8,35 +8,35 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --blur: 24px;
-    --glass: rgba(255,255,255,0.18);
-    --glass-border: rgba(255,255,255,0.32);
-    --glass-hover: rgba(255,255,255,0.26);
-    --glass-deep: rgba(255,255,255,0.10);
-    --text: #1a1a2e;
-    --text-2: rgba(26,26,46,0.55);
-    --text-3: rgba(26,26,46,0.35);
+    --blur: 20px;
+    --glass: rgba(255,255,255,0.72);
+    --glass-border: rgba(255,255,255,0.9);
+    --glass-hover: rgba(255,255,255,0.88);
+    --glass-deep: rgba(255,255,255,0.45);
+    --text: #18181b;
+    --text-2: #52525b;
+    --text-3: #a1a1aa;
     --accent: #5b4fff;
-    --accent-glow: rgba(91,79,255,0.3);
-    --shadow: 0 8px 32px rgba(31,38,135,0.18);
-    --shadow-hover: 0 16px 48px rgba(31,38,135,0.28);
+    --accent-glow: rgba(91,79,255,0.22);
+    --shadow: 0 4px 24px rgba(91,79,255,0.10), 0 1px 4px rgba(0,0,0,0.06);
+    --shadow-hover: 0 12px 40px rgba(91,79,255,0.18), 0 4px 12px rgba(0,0,0,0.08);
     --t: 200ms cubic-bezier(.4,0,.2,1);
     --radius: 16px;
     --radius-lg: 24px;
   }
 
   [data-theme="dark"] {
-    --glass: rgba(255,255,255,0.08);
-    --glass-border: rgba(255,255,255,0.14);
-    --glass-hover: rgba(255,255,255,0.13);
-    --glass-deep: rgba(0,0,0,0.20);
-    --text: #f0eeff;
-    --text-2: rgba(240,238,255,0.55);
-    --text-3: rgba(240,238,255,0.30);
+    --glass: rgba(30,28,48,0.78);
+    --glass-border: rgba(255,255,255,0.10);
+    --glass-hover: rgba(40,36,64,0.88);
+    --glass-deep: rgba(0,0,0,0.30);
+    --text: #f4f4f5;
+    --text-2: #a1a1aa;
+    --text-3: #52525b;
     --accent: #7c6fff;
-    --accent-glow: rgba(124,111,255,0.35);
-    --shadow: 0 8px 32px rgba(0,0,0,0.4);
-    --shadow-hover: 0 16px 48px rgba(0,0,0,0.55);
+    --accent-glow: rgba(124,111,255,0.28);
+    --shadow: 0 4px 24px rgba(0,0,0,0.35);
+    --shadow-hover: 0 12px 40px rgba(0,0,0,0.5);
   }
 
   /* ── Background ── */
@@ -63,9 +63,9 @@
     position: fixed; border-radius: 50%; filter: blur(80px);
     animation: float 12s ease-in-out infinite; pointer-events: none; z-index: -1;
   }
-  .blob-1 { width: 500px; height: 500px; background: rgba(168,130,255,0.35); top: -120px; left: -100px; animation-delay: 0s; }
-  .blob-2 { width: 400px; height: 400px; background: rgba(100,180,255,0.30); top: 40%; right: -80px; animation-delay: -4s; }
-  .blob-3 { width: 350px; height: 350px; background: rgba(255,160,200,0.28); bottom: -80px; left: 30%; animation-delay: -8s; }
+  .blob-1 { width: 500px; height: 500px; background: rgba(168,130,255,0.22); top: -120px; left: -100px; animation-delay: 0s; }
+  .blob-2 { width: 400px; height: 400px; background: rgba(100,180,255,0.18); top: 40%; right: -80px; animation-delay: -4s; }
+  .blob-3 { width: 350px; height: 350px; background: rgba(255,160,200,0.16); bottom: -80px; left: 30%; animation-delay: -8s; }
 
   [data-theme="dark"] .blob-1 { background: rgba(80,40,180,0.5); }
   [data-theme="dark"] .blob-2 { background: rgba(20,80,160,0.45); }
